@@ -5,7 +5,7 @@
 <div class="container mt-4">
   <div class="row">
 
-```
+
 <!-- Filters -->
 <div class="col-md-3">
 
@@ -23,8 +23,8 @@
     </div>
 
     <!-- Genre Filter -->
-    <div class="card mb-3">
-      <div class="card-header">
+      <div class="card filter-card mb-3">
+        <div class="card-header">
         Genre
       </div>
 
@@ -129,24 +129,25 @@
 
     <div class="col-md-4 mb-4">
 
-      <div class="card h-100 shadow-sm">
+      <div class="card movie-card h-100">
 
         {% if movie.image %}
-        <img
-          src="{{ movie.image.url }}"
-          class="card-img-top"
-          style="height:300px;object-fit:cover;"
-          alt="{{ movie.name }}"
-        >
+            <img
+      src="{{ movie.image.url }}"
+      class="movie-poster"
+      alt="{{ movie.name }}"
+    >
         {% endif %}
 
         <div class="card-body">
 
-          <h5 class="card-title">
+          <h5 class="movie-title">
             {{ movie.name }}
           </h5>
 
-          <p>⭐ {{ movie.rating }}</p>
+          <p class="movie-rating">
+            {{ movie.rating }}
+          </p>
 
           <p>
             <strong>Genre:</strong>
@@ -169,7 +170,7 @@
 
           <a
             href="{% url 'theator_list' movie.id %}"
-            class="btn btn-outline-primary w-100"
+            class="btn btn-primary btn-theater w-100"
           >
             View Theaters
           </a>
