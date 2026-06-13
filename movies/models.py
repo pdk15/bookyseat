@@ -20,7 +20,7 @@ class Movies(models.Model):
     genre = models.CharField(max_length=50, choices=GENRE_CHOICES)
     language = models.CharField(max_length=50, choices=LANGUAGE_CHOICES)
     name= models.CharField(max_length=255)
-    image= models.ImageField(upload_to="movies/")
+    image= models.URLField()
     rating = models.DecimalField(max_digits=3,decimal_places=1)
     cast= models.TextField()
     description= models.TextField(blank=True,null=True) # optional
