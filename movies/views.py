@@ -7,38 +7,51 @@ from django.core.paginator import Paginator
 
 # Create your views here
 
+from django.core.paginator import Paginator
+from django.db.models import Count
+
 def movie_list(request):
+
     movies = Movies.objects.all()
-    
-    genre = request.GET.get('genre')
-    language = request.GET.get('language')
-    
-    if genre:
-        movies = movies.filter(genre__in=genre)
-    
-    if language:
-        movies = movies.filter(language__in=language)
-        
-    sort_by = request.GET.get('sort_by')
-    
-    if sort_by == 'rating':
-        movies = movies.order_by('-rating')
-    elif sort_by == 'name' :
-        movies = movies.order_by('name')
-    
-    genre_count = movies.values('genre').annotate(total=Count('id')).order_by('genre')
-    
-    paginator = Paginator(movies , 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
+
+    selected_genres = request.GET.getlist('genre')
+    selected_languages = request.GET.getlist('language')
+
+    if selected_genres:
+        movies = movies.filter(genre__in=selected_genres)
+
+    if selected_languages:
+        movies = movies.filter(language__in=selected_languages)
+
+    sort = request.GET.get('sort')
+
+    if sort:
+        movies = movies.order_by(sort)
+
+    genres = (
+        Movies.objects.values('genre')
+        .annotate(total=Count('id'))
+        .order_by('genre')
+    )
+
+    languages = (
+        Movies.objects.values('language')
+        .annotate(total=Count('id'))
+        .order_by('language')
+    )
+
+    paginator = Paginator(movies, 6)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
     context = {
-        'page_obj' : page_obj ,
-        'genre_count' : genre_count
+        'page_obj': page_obj,
+        'genres': genres,
+        'languages': languages,
+        'selected_genres': selected_genres,
+        'selected_languages': selected_languages,
     }
 
-    return render(request , 'movies/movie_list.html' , context)
-
+    return render(request, 'movies/movie_list.html', context)
 def theator_list(request , movie_id):
     movie = get_object_or_404(Movies , id=movie_id)
     theators = Theator.objects.filter(movies=movie)

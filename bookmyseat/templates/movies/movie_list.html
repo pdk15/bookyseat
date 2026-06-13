@@ -24,14 +24,7 @@
               type="checkbox"
               name="genre"
               value="{{ genre.genre }}"
-              {%
-              if
-              genre.genre
-              in
-              selected_genres
-              %}checked{%
-              endif
-              %}
+              {% if genre.genre in selected_genres %}checked{% endif %}
             />
             <label class="form-check-label">
               {{ genre.genre }} ({{ genre.total }})
