@@ -136,12 +136,10 @@
         <div class="col-md-4 mb-4">
           <div class="card movie-card h-100">
             {% if movie.image %}
-            <img
-              src="{{ movie.image.url }}"
-              class="movie-poster"
-              alt="{{ movie.name }}"
-            />
-            {% endif %}
+    <img src="{{ movie.image.url }}" class="movie-poster">
+{% elif movie.image_url %}
+    <img src="{{ movie.image_url }}" class="movie-poster">
+{% endif %}
 
             <div class="card-body">
               <h5 class="movie-title">{{ movie.name }}</h5>
