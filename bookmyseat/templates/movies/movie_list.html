@@ -1,246 +1,230 @@
-{% extends "users/base.html" %}
-
-{% block content %}
+{% extends "users/base.html" %} {% block content %}
 
 <div class="container mt-4">
   <div class="row">
-
-
-<!-- Filters -->
-<div class="col-md-3">
-
-  <form method="GET">
-
-    <!-- Search -->
-    <div class="mb-3">
-      <input
-        type="text"
-        name="search"
-        class="form-control"
-        placeholder="Search Movies"
-        value="{{ request.GET.search }}"
-      >
-    </div>
-
-    <!-- Genre Filter -->
-      <div class="card filter-card mb-3">
-        <div class="card-header">
-        Genre
-      </div>
-
-      <div class="card-body">
-
-        {% for genre in genres %}
-        <div class="form-check">
-
+    <!-- Filters -->
+    <div class="col-md-3">
+      <form method="GET">
+        <!-- Search -->
+        <div class="mb-3">
           <input
-            class="form-check-input"
-            type="checkbox"
-            name="genre"
-            value="{{ genre.genre }}"
-            {% if genre.genre in selected_genres %}checked{% endif %}
-          >
-
-          <label class="form-check-label">
-            {{ genre.genre }} ({{ genre.total }})
-          </label>
-
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search Movies"
+            value="{{ request.GET.search }}"
+          />
         </div>
-        {% endfor %}
 
-      </div>
-    </div>
+        <!-- Genre Filter -->
+        <div class="card filter-card mb-3">
+          <div class="card-header">Genre</div>
 
-    <!-- Language Filter -->
-    <div class="card mb-3">
-      <div class="card-header">
-        Language
-      </div>
+          <div class="card-body">
+            {% for genre in genres %}
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="genre"
+                value="{{ genre.genre }}"
+                {%
+                if
+                genre.genre
+                in
+                selected_genres
+                %}checked{%
+                endif
+                %}
+              />
 
-      <div class="card-body">
-
-        {% for language in languages %}
-        <div class="form-check">
-
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="language"
-            value="{{ language.language }}"
-            {% if language.language in selected_languages %}checked{% endif %}
-          >
-
-          <label class="form-check-label">
-            {{ language.language }} ({{ language.total }})
-          </label>
-
+              <label class="form-check-label">
+                {{ genre.genre }} ({{ genre.total }})
+              </label>
+            </div>
+            {% endfor %}
+          </div>
         </div>
-        {% endfor %}
 
-      </div>
+        <!-- Language Filter -->
+        <div class="card mb-3">
+          <div class="card-header">Language</div>
+
+          <div class="card-body">
+            {% for language in languages %}
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="language"
+                value="{{ language.language }}"
+                {%
+                if
+                language.language
+                in
+                selected_languages
+                %}checked{%
+                endif
+                %}
+              />
+
+              <label class="form-check-label">
+                {{ language.language }} ({{ language.total }})
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Sorting -->
+        <div class="mb-3">
+          <select name="sort" class="form-control">
+            <option value="">Sort By</option>
+
+            <option
+              value="name"
+              {%
+              if
+              request.GET.sort=""
+              ="name"
+              %}selected{%
+              endif
+              %}
+            >
+              Movie Name
+            </option>
+
+            <option
+              value="-rating"
+              {%
+              if
+              request.GET.sort=""
+              ="-rating"
+              %}selected{%
+              endif
+              %}
+            >
+              Highest Rating
+            </option>
+
+            <option
+              value="rating"
+              {%
+              if
+              request.GET.sort=""
+              ="rating"
+              %}selected{%
+              endif
+              %}
+            >
+              Lowest Rating
+            </option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+          Apply Filters
+        </button>
+      </form>
     </div>
 
-    <!-- Sorting -->
-    <div class="mb-3">
+    <!-- Movies -->
+    <div class="col-md-9">
+      <div class="row" id="movieList">
+        {% for movie in page_obj %}
 
-      <select name="sort" class="form-control">
-
-        <option value="">Sort By</option>
-
-        <option
-          value="name"
-          {% if request.GET.sort == "name" %}selected{% endif %}
-        >
-          Movie Name
-        </option>
-
-        <option
-          value="-rating"
-          {% if request.GET.sort == "-rating" %}selected{% endif %}
-        >
-          Highest Rating
-        </option>
-
-        <option
-          value="rating"
-          {% if request.GET.sort == "rating" %}selected{% endif %}
-        >
-          Lowest Rating
-        </option>
-
-      </select>
-
-    </div>
-
-    <button type="submit" class="btn btn-primary w-100">
-      Apply Filters
-    </button>
-
-  </form>
-
-</div>
-
-<!-- Movies -->
-<div class="col-md-9">
-
-  <div class="row" id="movieList">
-
-    {% for movie in page_obj %}
-
-    <div class="col-md-4 mb-4">
-
-      <div class="card movie-card h-100">
-
-        {% if movie.image %}
+        <div class="col-md-4 mb-4">
+          <div class="card movie-card h-100">
+            {% if movie.image %}
             <img
-      src="{{ movie.image.url }}"
-      class="movie-poster"
-      alt="{{ movie.name }}"
-    >
-        {% endif %}
+              src="{{ movie.image.url }}"
+              class="movie-poster"
+              alt="{{ movie.name }}"
+            />
+            {% endif %}
 
-        <div class="card-body">
+            <div class="card-body">
+              <h5 class="movie-title">{{ movie.name }}</h5>
 
-          <h5 class="movie-title">
-            {{ movie.name }}
-          </h5>
+              <p class="movie-rating">{{ movie.rating }}</p>
 
-          <p class="movie-rating">
-            {{ movie.rating }}
-          </p>
+              <p>
+                <strong>Genre:</strong>
+                {{ movie.genre }}
+              </p>
 
-          <p>
-            <strong>Genre:</strong>
-            {{ movie.genre }}
-          </p>
+              <p>
+                <strong>Language:</strong>
+                {{ movie.language }}
+              </p>
 
-          <p>
-            <strong>Language:</strong>
-            {{ movie.language }}
-          </p>
+              <p>
+                <strong>Cast:</strong>
+                {{ movie.cast }}
+              </p>
+            </div>
 
-          <p>
-            <strong>Cast:</strong>
-            {{ movie.cast }}
-          </p>
-
+            <div class="card-footer bg-white">
+              <a
+                href="{% url 'theator_list' movie.id %}"
+                class="btn btn-primary btn-theater w-100"
+              >
+                View Theaters
+              </a>
+            </div>
+          </div>
         </div>
 
-        <div class="card-footer bg-white">
+        {% empty %}
 
-          <a
-            href="{% url 'theator_list' movie.id %}"
-            class="btn btn-primary btn-theater w-100"
-          >
-            View Theaters
-          </a>
-
+        <div class="col-12 text-center">
+          <h5>No Movies Found</h5>
         </div>
 
+        {% endfor %}
       </div>
 
+      <!-- Pagination -->
+
+      <nav>
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a
+              class="page-link"
+              href="?page={{ page_obj.previous_page_number }}"
+            >
+              Previous
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="page-item active">
+            <span class="page-link"> {{ page_obj.number }} </span>
+          </li>
+
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+              Next
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
-
-    {% empty %}
-
-    <div class="col-12 text-center">
-      <h5>No Movies Found</h5>
-    </div>
-
-    {% endfor %}
-
-  </div>
-
-  <!-- Pagination -->
-
-  <nav>
-    <ul class="pagination justify-content-center">
-
-      {% if page_obj.has_previous %}
-      <li class="page-item">
-        <a
-          class="page-link"
-          href="?page={{ page_obj.previous_page_number }}"
-        >
-          Previous
-        </a>
-      </li>
-      {% endif %}
-
-      <li class="page-item active">
-        <span class="page-link">
-          {{ page_obj.number }}
-        </span>
-      </li>
-
-      {% if page_obj.has_next %}
-      <li class="page-item">
-        <a
-          class="page-link"
-          href="?page={{ page_obj.next_page_number }}"
-        >
-          Next
-        </a>
-      </li>
-      {% endif %}
-
-    </ul>
-  </nav>
-
-</div>
-```
-
+    ```
   </div>
 </div>
 
 <style>
-.card{
-    transition:0.3s;
-}
+  .card {
+    transition: 0.3s;
+  }
 
-.card:hover{
-    transform:translateY(-5px);
-}
+  .card:hover {
+    transform: translateY(-5px);
+  }
 </style>
 
 {% endblock %}
