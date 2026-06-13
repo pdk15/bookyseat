@@ -4,7 +4,7 @@ from .models import Movies, Theator, Seat, Booking
 
 @admin.register(Movies)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ['name','rating','cast','description']
+    list_display = ['name','rating','cast','genre']
 
 @admin.register(Theator)
 class TheatorAdmin(admin.ModelAdmin):
