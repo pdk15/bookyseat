@@ -3,11 +3,34 @@ from django.contrib.auth.models import User
 
 
 class Movies(models.Model):
+    
+    GENRE_CHOICES = [
+        ('Action', 'Action'),
+        ('Drama', 'Drama'),
+        ('Comedy', 'Comedy'),
+        ('Thriller', 'Thriller'),
+    ]
+
+    LANGUAGE_CHOICES = [
+        ('English', 'English'),
+        ('Hindi', 'Hindi'),
+        ('Korean', 'Korean'),
+    ]
+
+    genre = models.CharField(max_length=50, choices=GENRE_CHOICES)
+    language = models.CharField(max_length=50, choices=LANGUAGE_CHOICES)
     name= models.CharField(max_length=255)
     image= models.ImageField(upload_to="movies/")
     rating = models.DecimalField(max_digits=3,decimal_places=1)
     cast= models.TextField()
     description= models.TextField(blank=True,null=True) # optional
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+            models.Index(fields=['genre']),
+            models.Index(fields=['language']),
+        ]
 
     def __str__(self):
         return self.name

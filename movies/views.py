@@ -2,16 +2,42 @@ from django.db import IntegrityError
 from django.shortcuts import render , redirect , get_object_or_404
 from .models import Movies , Theator , Seat , Booking
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.core.paginator import Paginator
 
 # Create your views here
 
 def movie_list(request):
-    search_query = request.GET.get('search')
-    if search_query :
-        movies = Movies.objects.filter(name__icontains=search_query)
-    else:
-        movies = Movies.objects.all()
-    return render(request , 'movies/movie_list.html' , {'movies': movies})
+    movies = Movies.objects.all()
+    
+    genre = request.GET.get('genre')
+    language = request.GET.get('language')
+    
+    if genre:
+        movies = movies.filter(genre__in=genre)
+    
+    if language:
+        movies = movies.filter(language__in=language)
+        
+    sort_by = request.GET.get('sort_by')
+    
+    if sort_by == 'rating':
+        movies = movies.order_by('-rating')
+    elif sort_by == 'name' :
+        movies = movies.order_by('name')
+    
+    genre_count = movies.values('genre').annotate(total=Count('id')).order_by('genre')
+    
+    paginator = Paginator(movies , 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj' : page_obj ,
+        'genre_count' : genre_count
+    }
+
+    return render(request , 'movies/movie_list.html' , context)
 
 def theator_list(request , movie_id):
     movie = get_object_or_404(Movies , id=movie_id)
