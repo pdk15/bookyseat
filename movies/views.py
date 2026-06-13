@@ -13,6 +13,9 @@ from django.db.models import Count
 def movie_list(request):
 
     movies = Movies.objects.all()
+    search = request.GET.get('search')
+    if search:
+        movies = movies.filter(name__icontains=search)
 
     selected_genres = request.GET.getlist('genre')
     selected_languages = request.GET.getlist('language')
@@ -40,7 +43,7 @@ def movie_list(request):
         .order_by('language')
     )
 
-    paginator = Paginator(movies, 6)
+    paginator = Paginator(movies, 4)
     page_obj = paginator.get_page(request.GET.get('page'))
 
     context = {
@@ -49,9 +52,11 @@ def movie_list(request):
         'languages': languages,
         'selected_genres': selected_genres,
         'selected_languages': selected_languages,
-    }
+        'movies':movies    
+        }
 
     return render(request, 'movies/movie_list.html', context)
+
 def theator_list(request , movie_id):
     movie = get_object_or_404(Movies , id=movie_id)
     theators = Theator.objects.filter(movies=movie)
