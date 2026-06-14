@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User 
+import uuid
 
 
 class Movies(models.Model):
@@ -52,10 +53,31 @@ class Seat(models.Model):
         return f'{self.seat_number} in {self.theator.name}'
 
 class Booking(models.Model):
+  
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     seat=models.OneToOneField(Seat,on_delete=models.CASCADE)
     movies =models.ForeignKey(Movies,on_delete=models.CASCADE)
     theator=models.ForeignKey(Theator,on_delete=models.CASCADE)
     booked_at=models.DateTimeField(auto_now_add=True)
+    payment_id = models.CharField(
+        max_length=100,
+        default=uuid.uuid4
+    )
     def __str__(self):
         return f'Booking by {self.user.username} for {self.seat.seat_number} at {self.theator.name}'
+
+class EmailLog(models.Model):
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE
+    )
+
+    status = models.CharField(max_length=20)
+    error_message = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )

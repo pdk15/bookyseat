@@ -4,6 +4,8 @@ from .models import Movies , Theator , Seat , Booking
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.core.paginator import Paginator
+from threading import Thread
+from .utils import send_booking_email
 
 # Create your views here
 
@@ -94,3 +96,30 @@ def book_seats(request , theator_id):
         return redirect('profile')  
     return render(request , 'movies/book_seats.html',{'theator':theator , 'seats':seats})
 
+
+
+
+@login_required
+def book_ticket(request, seat_id):
+
+    seat = Seat.objects.get(
+        id=seat_id,
+        is_booked=False
+    )
+
+    seat.is_booked = True
+    seat.save()
+
+    booking = Booking.objects.create(
+        user=request.user,
+        seat=seat,
+        movies=seat.theator.movies,
+        theator=seat.theator
+    )
+
+    Thread(
+        target=send_booking_email,
+        args=(booking,)
+    ).start()
+
+    return redirect('profile')
