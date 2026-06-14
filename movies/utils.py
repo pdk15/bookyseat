@@ -24,8 +24,11 @@ def send_booking_email(booking):
             "text/html"
         )
 
+        print("Sending email to:", booking.user.email)
+
         email.send()
 
+        print("Email sent successfully")
         EmailLog.objects.create(
             booking=booking,
             status='SUCCESS'
