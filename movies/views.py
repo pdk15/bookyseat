@@ -80,7 +80,7 @@ def book_seats(request , theator_id):
                 error_seats.append(seat.seat_number)
                 continue
             try:
-                Booking.objects.create(
+                booking = Booking.objects.create(
                     user = request.user,
                     seat = seat ,
                     movies = theator.movies ,
@@ -88,6 +88,11 @@ def book_seats(request , theator_id):
                 )
                 seat.is_booked = True
                 seat.save()
+                
+                Thread(
+                    target=send_booking_email,
+                    args=(booking,)
+                ).start()
             except IntegrityError :
                 error_seats.append(seat.seat_number)
         if error_seats :
@@ -98,28 +103,3 @@ def book_seats(request , theator_id):
 
 
 
-
-@login_required
-def book_ticket(request, seat_id):
-
-    seat = Seat.objects.get(
-        id=seat_id,
-        is_booked=False
-    )
-
-    seat.is_booked = True
-    seat.save()
-
-    booking = Booking.objects.create(
-        user=request.user,
-        seat=seat,
-        movies=seat.theator.movies,
-        theator=seat.theator
-    )
-
-    Thread(
-        target=send_booking_email,
-        args=(booking,)
-    ).start()
-
-    return redirect('profile')
