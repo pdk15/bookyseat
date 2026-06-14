@@ -153,4 +153,4 @@ EMAIL_HOST_USER = 'pranavkhanolkar15@gmail.com'
 
 EMAIL_HOST_PASSWORD = 'yxpp mnsa eqmr rydi'
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = 'pranavkhanolkar589@gmail.com'

@@ -90,6 +90,7 @@ def book_seats(request , theator_id):
                     target=send_booking_email,
                     args=(booking,)
                 ).start()
+                
                 seat.is_booked = True
                 seat.save()
                 

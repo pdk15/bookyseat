@@ -21,3 +21,5 @@ class UpdateProfileForm(forms.ModelForm):
         model = User
         fields =['password']
         
+        
+        
