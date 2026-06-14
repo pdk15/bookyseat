@@ -1,0 +1,23 @@
+<h2>Movie Ticket Confirmation</h2>
+
+<p>Hello {{ booking.user.username }},</p>
+
+<p>Your booking has been confirmed.</p>
+
+<hr />
+
+<p><strong>Movie:</strong> {{ booking.movies.name }}</p>
+
+<p><strong>Theater:</strong> {{ booking.theator.name }}</p>
+
+<p><strong>Show Time:</strong> {{ booking.theator.time }}</p>
+
+<p><strong>Seat:</strong> {{ booking.seat.seat_number }}</p>
+
+<p><strong>Payment ID:</strong> {{ booking.payment_id }}</p>
+
+<p><strong>Booked At:</strong> {{ booking.booked_at }}</p>
+
+<hr />
+
+<p>Enjoy your movie 🍿</p>
