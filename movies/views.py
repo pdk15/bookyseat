@@ -86,13 +86,14 @@ def book_seats(request , theator_id):
                     movies = theator.movies ,
                     theator = theator
                 )
-                seat.is_booked = True
-                seat.save()
-                
                 Thread(
                     target=send_booking_email,
                     args=(booking,)
                 ).start()
+                seat.is_booked = True
+                seat.save()
+                
+                
             except IntegrityError :
                 error_seats.append(seat.seat_number)
         if error_seats :
